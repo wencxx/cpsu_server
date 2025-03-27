@@ -7,6 +7,7 @@ const User = require('./models/user')
 const idCardApplicaton = require('./models/id-card')
 const goodMoralRequests = require('./models/good-moral')
 const axios = require('axios')
+const moment = require('moment-timezone');
 
 const app = express()
 app.use(cors())
@@ -131,6 +132,10 @@ app.put('/idcard-application/:id', async (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
 
+    if (updateData.scheduleDate) {
+        updateData.scheduleDate = moment(updateData.scheduleDate).tz('Asia/Manila').format();
+    }
+
     try {
         const updatedApplication = await idCardApplicaton.findByIdAndUpdate(id, updateData, { new: true });
 
@@ -194,6 +199,10 @@ app.get('/good-moral-requests', async (req, res) => {
 app.put('/good-moral-requests/:id', async (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
+
+    if (updateData.selectedDate) {
+        updateData.selectedDate = moment(updateData.selectedDate).tz('Asia/Manila').format();
+    }
 
     try {
         const updatedRequest = await goodMoralRequests.findByIdAndUpdate(id, updateData, { new: true });
