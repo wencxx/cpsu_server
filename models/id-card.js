@@ -11,6 +11,11 @@ const idCardSchema = new mongoose.Schema({
     guardianName: String,
     guardianContact: Number,
     scheduleDate: Date,
+    claimed: {
+        type: Boolean,
+        required: false,
+        default: false
+    },
     status: {
         type: String,
         default: 'Pending'

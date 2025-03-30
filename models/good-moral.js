@@ -10,6 +10,11 @@ const goodMoral = new mongoose.Schema({
     syCurrentlyEnrolled: String,
     selectedDate: Date,
     purpose: String,
+    claimed: {
+        type: Boolean,
+        required: false,
+        default: false
+    },
     status: {
         type: String,
         default: 'Pending'

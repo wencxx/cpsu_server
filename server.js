@@ -21,8 +21,7 @@ const secretKey = 'cpsu_appointment'
 async function sendApprovalSms(to, message) {
     try {
         const response = await axios.post(
-            // 'https://e59w93.api.infobip.com/sms/2/text/advanced',
-            'https://e5mnw3.api.infobip.com/sms/2/text/advanced',
+            'https://z3y1kk.api.infobip.com/sms/2/text/advanced',
             {
                 messages: [
                     {
@@ -34,8 +33,7 @@ async function sendApprovalSms(to, message) {
             },
             {
                 headers: {
-                    // 'Authorization': 'App 74f9b6a9febc7397bd6ceb5844d41ca7-19d66a87-ad81-4533-a2fa-cdb8a930ac9d',
-                    'Authorization': 'App d6ccf75c89001ec61facd51e779fd4ae-910edbb7-e644-4369-b629-5e0023ff034c',
+                    'Authorization': 'App c36d4ae2c339dcd9541a2f6279119d93-2a2e2cc0-4e35-466f-9f6e-d64b497502bb',
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 }
@@ -277,9 +275,29 @@ app.put('/approve-application/:id', async (req, res) => {
         }
 
         // Send SMS notification
-        await sendApprovalSms(updateApplication.number, `Hello ${updateApplication.fullName}, Your application has been approved.`);
+        await sendApprovalSms(updateApplication.number, `Request has been approved. Please settle your payment at Cashier's Office.`);
 
         res.send('Application approved.');
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Server error');
+    }
+});
+
+app.put('/claim-application/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const updatedRequest = await idCardApplicaton.findByIdAndUpdate(id, { claimed: true }, { new: true });
+
+        if (!updatedRequest) {
+            return res.status(404).send('Request not found');
+        }
+
+        // Send SMS notification
+        await sendApprovalSms(updatedRequest.number, `Your request was successfully given to you.`);
+
+        res.send('Request claimed.');
     } catch (error) {
         console.log(error);
         res.status(500).send('Server error');
@@ -300,6 +318,7 @@ app.get('/approved-requests', async (req, res) => {
         res.send(error)
     }
 })
+
 
 app.get('/pending-requests', async (req, res) => {
     try {
@@ -327,9 +346,29 @@ app.put('/approve-requests/:id', async (req, res) => {
         }
 
         // Send SMS notification
-        await sendApprovalSms(updatedRequest.number, `Hello ${updatedRequest.fullName}, Your request has been approved.`);
+        await sendApprovalSms(updatedRequest.number, `Request has been approved. Please settle your payment at Cashier's Office.`);
 
         res.send('Request approved.');
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Server error');
+    }
+});
+
+app.put('/claim-request/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const updatedRequest = await goodMoralRequests.findByIdAndUpdate(id, { claimed: true }, { new: true });
+
+        if (!updatedRequest) {
+            return res.status(404).send('Request not found');
+        }
+
+        // Send SMS notification
+        await sendApprovalSms(updatedRequest.number, `Your request was successfully given to you.`);
+
+        res.send('Request claimed.');
     } catch (error) {
         console.log(error);
         res.status(500).send('Server error');
