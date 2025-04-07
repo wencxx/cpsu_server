@@ -113,7 +113,7 @@ app.post('/idcard-application', async (req, res) => {
 
 app.get('/idcard-application', async (req, res) => {
     try {
-        const applications = await idCardApplicaton.find()
+        const applications = await idCardApplicaton.find().sort({ createdAt: -1 });
 
         if (applications.length) {
             res.send(applications)
@@ -181,7 +181,7 @@ app.post('/good-moral-requests', async (req, res) => {
 
 app.get('/good-moral-requests', async (req, res) => {
     try {
-        const goodMoral = await goodMoralRequests.find()
+        const goodMoral = await goodMoralRequests.find().sort({ createdAt: -1 });
 
         if (goodMoral.length) {
             res.send(goodMoral)
@@ -236,7 +236,7 @@ app.delete('/good-moral-requests/:id', async (req, res) => {
 // admin side
 app.get('/approved-application', async (req, res) => {
     try {
-        const applications = await idCardApplicaton.find({ status: 'Approved' })
+        const applications = await idCardApplicaton.find({ status: 'Approved' }).sort({ createdAt: -1 });
 
         if (applications.length) {
             res.send(applications)
@@ -251,7 +251,7 @@ app.get('/approved-application', async (req, res) => {
 
 app.get('/pending-application', async (req, res) => {
     try {
-        const applications = await idCardApplicaton.find({ status: 'Pending' })
+        const applications = await idCardApplicaton.find({ status: 'Pending' }).sort({ createdAt: -1 });
 
         if (applications.length) {
             res.send(applications)
@@ -306,7 +306,7 @@ app.put('/claim-application/:id', async (req, res) => {
 
 app.get('/approved-requests', async (req, res) => {
     try {
-        const requests = await goodMoralRequests.find({ status: 'Approved' })
+        const requests = await goodMoralRequests.find({ status: 'Approved' }).sort({ createdAt: -1 });
 
         if (requests.length) {
             res.send(requests)
@@ -319,10 +319,9 @@ app.get('/approved-requests', async (req, res) => {
     }
 })
 
-
 app.get('/pending-requests', async (req, res) => {
     try {
-        const requests = await goodMoralRequests.find({ status: 'Pending' })
+        const requests = await goodMoralRequests.find({ status: 'Pending' }).sort({ createdAt: -1 });
 
         if (requests.length) {
             res.send(requests)
@@ -382,8 +381,9 @@ app.get('/recent-requests', async (req, res) => {
 
         const recentRequests = await goodMoralRequests.find({
             createdAt: { $gte: thirtyDaysAgo },
-            status: 'Approved'
-        });
+            status: 'Approved',
+            claimed: true,
+        }).sort({ createdAt: -1 });
 
         res.status(200).json(recentRequests);
     } catch (error) {
@@ -398,8 +398,9 @@ app.get('/recent-applications', async (req, res) => {
 
         const recentRequests = await idCardApplicaton.find({
             createdAt: { $gte: thirtyDaysAgo },
-            status: 'Approved'
-        });
+            status: 'Approved',
+            claimed: true,
+        }).sort({ createdAt: -1 });
 
         res.status(200).json(recentRequests);
     } catch (error) {
