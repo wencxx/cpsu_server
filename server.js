@@ -141,6 +141,8 @@ app.put('/idcard-application/:id', async (req, res) => {
             return res.status(404).send('Application not found');
         }
 
+        await sendApprovalSms(updatedApplication.number, `Request has been rescheduled on ${updatedApplication.scheduleDate}.`);
+
         res.send('Application updated.');
     } catch (error) {
         console.log(error);
@@ -208,6 +210,8 @@ app.put('/good-moral-requests/:id', async (req, res) => {
         if (!updatedRequest) {
             return res.status(404).send('Request not found');
         }
+
+        await sendApprovalSms(updatedRequest.number, `Request has been rescheduled on ${updatedRequest.selectedDate}.`);
 
         res.send('Request updated.');
     } catch (error) {
