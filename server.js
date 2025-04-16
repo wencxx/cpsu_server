@@ -8,6 +8,7 @@ const idCardApplicaton = require('./models/id-card')
 const goodMoralRequests = require('./models/good-moral')
 const axios = require('axios')
 const moment = require('moment-timezone');
+const twilio = require('twilio');
 
 const app = express()
 app.use(cors())
@@ -18,32 +19,24 @@ connectDB()
 const saltRounds = 10
 const secretKey = 'cpsu_appointment'
 
+const accountSid = 'AC78fea3302f25ff4bba8d680104eae296';
+const authToken = 'dfcd221286f9711ae7bdf85572c52517';
+const fromNumber = '+16163444797'; 
+
+const client = twilio(accountSid, authToken);
+
 async function sendApprovalSms(to, message) {
     try {
-        const response = await axios.post(
-            'https://z3y1kk.api.infobip.com/sms/2/text/advanced',
-            {
-                messages: [
-                    {
-                        destinations: [{ to: to }],
-                        from: '447491163443',
-                        text: message
-                    }
-                ]
-            },
-            {
-                headers: {
-                    'Authorization': 'App c36d4ae2c339dcd9541a2f6279119d93-2a2e2cc0-4e35-466f-9f6e-d64b497502bb',
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            }
-        );
+        const response = await client.messages.create({
+            body: message,
+            from: fromNumber,
+            to: to
+        });
 
-        console.log('SMS sent:', response.data);
-        return response.data;
+        console.log('SMS sent:', response.sid);
+        return response;
     } catch (error) {
-        console.error('Error sending SMS:', error.response ? error.response.data : error.message);
+        console.error('Error sending SMS:', error.message);
     }
 }
 
