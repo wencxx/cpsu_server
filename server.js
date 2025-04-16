@@ -30,7 +30,7 @@ async function sendApprovalSms(to, message) {
         const response = await client.messages.create({
             body: message,
             from: fromNumber,
-            to: to
+            to: `+${to}`
         });
 
         console.log('SMS sent:', response.sid);
