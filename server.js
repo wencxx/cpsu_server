@@ -21,17 +21,20 @@ const secretKey = 'cpsu_appointment'
 
 const accountSid = 'AC78fea3302f25ff4bba8d680104eae296';
 const authToken = 'dfcd221286f9711ae7bdf85572c52517';
-const fromNumber = '+16163444797'; 
+const fromNumber = '+16163444797';
 
 const client = twilio(accountSid, authToken);
 
 async function sendApprovalSms(to, message) {
     try {
-        const response = await client.messages.create({
-            body: message,
-            from: fromNumber,
-            to: `+${to}`
-        });
+        const response = await axios.post('https://www.traccar.org/sms', {
+            "to": to,
+            "message": message
+        }, {
+            headers: {
+                Authorization: 'cSHfxTltTBCRNGKQYj8jZI:APA91bEpuKfr7Wse6Br4Um0hq3jhAS_IGkFRQaEjRP6IcbYJw9IDDThVszoRdePTSIRq0na1uQgj4Akg2x2nPduuk6wTzK31KTa8xgsZjcIYjLgxuPm6Yk4'
+            }
+        })
 
         console.log('SMS sent:', response.sid);
         return response;
@@ -39,6 +42,21 @@ async function sendApprovalSms(to, message) {
         console.error('Error sending SMS:', error.message);
     }
 }
+
+// async function sendApprovalSms(to, message) {
+//     try {
+//         const response = await client.messages.create({
+//             body: message,
+//             from: fromNumber,
+//             to: `+${to}`
+//         });
+
+//         console.log('SMS sent:', response.sid);
+//         return response;
+//     } catch (error) {
+//         console.error('Error sending SMS:', error.message);
+//     }
+// }
 
 // user endpoints
 app.post('/register', async (req, res) => {
