@@ -21,7 +21,7 @@ const secretKey = 'cpsu_appointment'
 async function sendApprovalSms(to, message) {
     try {
         const response = await axios.post('https://www.traccar.org/sms', {
-            "to": to,
+            "to": `+${to}`,
             "message": message
         }, {
             headers: {
