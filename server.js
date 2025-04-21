@@ -18,8 +18,6 @@ connectDB()
 const saltRounds = 10
 const secretKey = 'cpsu_appointment'
 
-const client = twilio(accountSid, authToken);
-
 async function sendApprovalSms(to, message) {
     try {
         const response = await axios.post('https://www.traccar.org/sms', {
